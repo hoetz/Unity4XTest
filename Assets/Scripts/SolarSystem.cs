@@ -15,9 +15,49 @@ public class SolarSystem : MonoBehaviour {
     void Start () {
 		
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+    // Update is called once per frame
+
+    private void Update()
+    {
+        Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit = new RaycastHit();
+        if (Physics.Raycast(mouseRay, out hit) && Input.GetMouseButtonDown(0))
+        {
+            Star star = Galaxy.GalaxyInstance.ReturnStarFromGameObject(hit.transform.gameObject);
+            Debug.Log(string.Format("You clicked on {0} with {1} planets", star.starName, star.numberOfPlanets));
+            Galaxy.GalaxyInstance.DestroyGalaxy();
+
+            CreateSolarSystem(star);
+        }
+    }
+
+    void CreateSolarSystem(Star star)
+    {
+        GameObject starGO = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        starGO.transform.position = Vector3.zero;
+        starGO.name = star.starName;
+        starGO.transform.SetParent(this.transform);
+
+        for (int i = 0; i < star.planetList.Count; i++)
+        {
+            Planet planet = star.planetList[i];
+
+            float distance = (i + 1) * 5;
+            float angle = Random.Range(0, 2 * Mathf.PI);
+
+            Vector3 planetPos = new Vector3(distance * Mathf.Cos(angle), 0, distance * Mathf.Sin(angle));
+
+            CreateSphereGameObject(planet, planetPos);
+        }
+    }
+
+    public GameObject CreateSphereGameObject(Planet planet, Vector3 cartPosition)
+    {
+        var starGO = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        starGO.name = planet.planetName;
+        starGO.transform.position = cartPosition;
+        starGO.transform.SetParent(this.transform);
+        return starGO;
+    }
 }

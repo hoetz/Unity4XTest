@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Planet {
-    string planetName;
-    string planetType;
+    public string planetName;
+    public string planetType;
 
     public Planet(string planetName, string planetType)
     {

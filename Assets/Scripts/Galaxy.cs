@@ -73,16 +73,6 @@ public class Galaxy : MonoBehaviour
             return null;
     }
 
-    private void Update()
-    {
-        Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit = new RaycastHit();
-        if (Physics.Raycast(mouseRay,out hit) && Input.GetMouseButtonDown(0))
-        {
-            Star star = Galaxy.GalaxyInstance.ReturnStarFromGameObject(hit.transform.gameObject);
-            Debug.Log(string.Format("You clicked on {0} with {1} planets",star.starName,star.numberOfPlanets));
-        }
-    }
 
     void CreatePlanetData(Star starData)
     {
@@ -113,12 +103,23 @@ public class Galaxy : MonoBehaviour
         }
     }
 
-    private static GameObject CreateSphereGameObject(Star starData, Vector3 cartPosition)
+    public GameObject CreateSphereGameObject(Star starData, Vector3 cartPosition)
     {
         var starGO = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         starGO.name = starData.starName;
         starGO.transform.position = cartPosition;
+        starGO.transform.SetParent(this.transform);
         return starGO;
+    }
+
+    public void DestroyGalaxy()
+    {
+        while (transform.childCount>0)
+        {
+            Transform go = transform.GetChild(0);
+            go.SetParent(null);
+            Destroy(go.gameObject);
+        }
     }
 
     private Vector3 RandomPosition()
