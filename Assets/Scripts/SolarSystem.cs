@@ -37,6 +37,8 @@ public class SolarSystem : MonoBehaviour {
 
     void CreateSolarSystem(Star star)
     {
+        Random.InitState(Galaxy.GalaxyInstance.seedNumber);
+
         SpaceObjects.CreateSphereObject(star.starName, Vector3.zero, this.transform);
 
         for (int i = 0; i < star.planetList.Count; i++)
