@@ -6,6 +6,7 @@ public class Galaxy : MonoBehaviour
     public int maximumRadius = 100;
     public float minDistBetweenStars;
     public int minRadius = 0;
+    public string[] availablePlanetTypes = { "Barren", "Terran", "Gas Giant" };
 
     // Use this for initialization
     private void Start()
@@ -17,6 +18,7 @@ public class Galaxy : MonoBehaviour
         for (int i = 0; i < numberOfStars; i++)
         {
             Star starData = new Star("Star" + i, Random.Range(1, 10));
+            CreatePlanetData(starData);
 
             Vector3 cartPosition = RandomPosition();
 
@@ -38,6 +40,36 @@ public class Galaxy : MonoBehaviour
                 Debug.LogError("Could not fit all the stars");
                 break;
             }
+        }
+
+    }
+
+    void CreatePlanetData(Star starData)
+    {
+        for (int i = 0; i < starData.numberOfPlanets; i++)
+        {
+            string name = starData.starName + (starData.planetList.Count + 1).ToString();
+
+            int random = Random.Range(1, 100);
+            string type = "";
+
+            if (random<40)
+            {
+                type = availablePlanetTypes[0];
+            }
+            else if (random>=40 && random <50)
+            {
+                type = availablePlanetTypes[1];
+            }
+            else
+            {
+                type = availablePlanetTypes[2];
+            }
+
+            Planet planetData = new Planet(name, type);
+            Debug.Log("Planet " + name+" type: "+type);
+
+            starData.planetList.Add(planetData);
         }
     }
 
