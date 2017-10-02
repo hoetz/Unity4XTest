@@ -48,16 +48,8 @@ public class SolarSystem : MonoBehaviour {
 
             Vector3 planetPos = new Vector3(distance * Mathf.Cos(angle), 0, distance * Mathf.Sin(angle));
 
-            CreateSphereGameObject(planet, planetPos);
-        }
-    }
+            SpaceObjects.CreateSphereObject(planet.planetName, planetPos, this.transform);
 
-    public GameObject CreateSphereGameObject(Planet planet, Vector3 cartPosition)
-    {
-        var starGO = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        starGO.name = planet.planetName;
-        starGO.transform.position = cartPosition;
-        starGO.transform.SetParent(this.transform);
-        return starGO;
+        }
     }
 }

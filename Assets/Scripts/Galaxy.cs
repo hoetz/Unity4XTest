@@ -36,13 +36,14 @@ public class Galaxy : MonoBehaviour
             Star starData = new Star("Star" + i, Random.Range(1, 10));
             CreatePlanetData(starData);
 
-            Vector3 cartPosition = RandomPosition();
+            Vector3 cartPosition = PositionMath.RandomPosition(minRadius, maximumRadius);
+
 
             Collider[] positionCollider = Physics.OverlapSphere(cartPosition, minDistBetweenStars);
 
             if (positionCollider.Length == 0)
             {
-                GameObject go= CreateSphereGameObject(starData, cartPosition);
+                GameObject go = SpaceObjects.CreateSphereObject(starData.starName, cartPosition, this.transform);
                 starToObjectMap.Add(starData, go);
                 failCount = 0;
             }
@@ -103,15 +104,6 @@ public class Galaxy : MonoBehaviour
         }
     }
 
-    public GameObject CreateSphereGameObject(Star starData, Vector3 cartPosition)
-    {
-        var starGO = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        starGO.name = starData.starName;
-        starGO.transform.position = cartPosition;
-        starGO.transform.SetParent(this.transform);
-        return starGO;
-    }
-
     public void DestroyGalaxy()
     {
         while (transform.childCount>0)
@@ -120,15 +112,6 @@ public class Galaxy : MonoBehaviour
             go.SetParent(null);
             Destroy(go.gameObject);
         }
-    }
-
-    private Vector3 RandomPosition()
-    {
-        float distance = Random.Range(minRadius, maximumRadius);
-        float angle = Random.Range(0, 2 * Mathf.PI);
-
-        Vector3 cartPosition = new Vector3(distance * Mathf.Cos(angle), 0, distance * Mathf.Sin(angle));
-        return cartPosition;
     }
 
     private void SanityChecks()
