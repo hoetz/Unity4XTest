@@ -1,14 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SolarSystem : MonoBehaviour {
 
     public static SolarSystem SolarSystemInstance;
+    public Button galaxyViewButton;
 
     void OnEnable()
     {
         SolarSystemInstance = this;
+        galaxyViewButton.interactable = false;
     }
 
     // Use this for initialization
@@ -34,10 +37,7 @@ public class SolarSystem : MonoBehaviour {
 
     void CreateSolarSystem(Star star)
     {
-        GameObject starGO = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        starGO.transform.position = Vector3.zero;
-        starGO.name = star.starName;
-        starGO.transform.SetParent(this.transform);
+        SpaceObjects.CreateSphereObject(star.starName, Vector3.zero, this.transform);
 
         for (int i = 0; i < star.planetList.Count; i++)
         {
@@ -51,5 +51,19 @@ public class SolarSystem : MonoBehaviour {
             SpaceObjects.CreateSphereObject(planet.planetName, planetPos, this.transform);
 
         }
+
+        galaxyViewButton.interactable = true;
+    }
+
+    public void DestroySolarSystem()
+    {
+        while (transform.childCount>0)
+        {
+            Transform go = transform.GetChild(0);
+            go.SetParent(null);
+            Destroy(go.gameObject);
+        }
+        galaxyViewButton.interactable = false;
+
     }
 }

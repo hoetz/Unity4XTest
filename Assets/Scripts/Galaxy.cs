@@ -24,7 +24,12 @@ public class Galaxy : MonoBehaviour
     private void Start()
     {
         SanityChecks();
+        CreateGalaxy();
 
+    }
+
+    public void CreateGalaxy()
+    {
         starToObjectMap = new Dictionary<Star, GameObject>();
 
         Random.InitState(seedNumber);
@@ -58,7 +63,6 @@ public class Galaxy : MonoBehaviour
                 break;
             }
         }
-
     }
 
     public Star ReturnStarFromGameObject(GameObject go)
