@@ -4,8 +4,15 @@ using UnityEngine;
 
 public class SolarSystem : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
+    public static SolarSystem SolarSystemInstance;
+
+    void OnEnable()
+    {
+        SolarSystemInstance = this;
+    }
+
+    // Use this for initialization
+    void Start () {
 		
 	}
 	

@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 public class Galaxy : MonoBehaviour
 {
@@ -7,11 +9,25 @@ public class Galaxy : MonoBehaviour
     public float minDistBetweenStars;
     public int minRadius = 0;
     public string[] availablePlanetTypes = { "Barren", "Terran", "Gas Giant" };
+    public int seedNumber = 100;
+
+    public Dictionary<Star,GameObject> starToObjectMap { get; protected set; }
+
+    public static Galaxy GalaxyInstance;
+
+    private void OnEnable()
+    {
+        GalaxyInstance = this;
+    }
 
     // Use this for initialization
     private void Start()
     {
         SanityChecks();
+
+        starToObjectMap = new Dictionary<Star, GameObject>();
+
+        Random.InitState(seedNumber);
 
         int failCount = 0;
 
@@ -26,8 +42,8 @@ public class Galaxy : MonoBehaviour
 
             if (positionCollider.Length == 0)
             {
-                CreateSphereGameObject(starData, cartPosition);
-
+                GameObject go= CreateSphereGameObject(starData, cartPosition);
+                starToObjectMap.Add(starData, go);
                 failCount = 0;
             }
             else
@@ -42,6 +58,30 @@ public class Galaxy : MonoBehaviour
             }
         }
 
+    }
+
+    public Star ReturnStarFromGameObject(GameObject go)
+    {
+        if (starToObjectMap.ContainsValue(go))
+        {
+            int index = starToObjectMap.Values.ToList().IndexOf(go);
+            Star star = starToObjectMap.Keys.ToList()[index];
+
+            return star;
+        }
+        else
+            return null;
+    }
+
+    private void Update()
+    {
+        Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit = new RaycastHit();
+        if (Physics.Raycast(mouseRay,out hit) && Input.GetMouseButtonDown(0))
+        {
+            Star star = Galaxy.GalaxyInstance.ReturnStarFromGameObject(hit.transform.gameObject);
+            Debug.Log(string.Format("You clicked on {0} with {1} planets",star.starName,star.numberOfPlanets));
+        }
     }
 
     void CreatePlanetData(Star starData)
@@ -73,11 +113,12 @@ public class Galaxy : MonoBehaviour
         }
     }
 
-    private static void CreateSphereGameObject(Star starData, Vector3 cartPosition)
+    private static GameObject CreateSphereGameObject(Star starData, Vector3 cartPosition)
     {
         var starGO = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         starGO.name = starData.starName;
         starGO.transform.position = cartPosition;
+        return starGO;
     }
 
     private Vector3 RandomPosition()
