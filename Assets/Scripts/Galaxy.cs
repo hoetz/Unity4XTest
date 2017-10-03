@@ -10,6 +10,8 @@ public class Galaxy : MonoBehaviour
     public int minRadius = 0;
     public string[] availablePlanetTypes = { "Barren", "Terran", "Gas Giant" };
     public int seedNumber = 100;
+    public bool galaxyView { get; set; }
+    public static int maxNumberOfPlanets = 10;
 
     public Dictionary<Star,GameObject> starToObjectMap { get; protected set; }
 
@@ -34,11 +36,13 @@ public class Galaxy : MonoBehaviour
 
         Random.InitState(seedNumber);
 
+        galaxyView = true;
+
         int failCount = 0;
 
         for (int i = 0; i < numberOfStars; i++)
         {
-            Star starData = new Star("Star" + i, Random.Range(1, 10));
+            Star starData = new Star("Star" + i, Random.Range(1, maxNumberOfPlanets));
             CreatePlanetData(starData);
 
             Vector3 cartPosition = PositionMath.RandomPosition(minRadius, maximumRadius);

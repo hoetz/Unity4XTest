@@ -26,7 +26,26 @@ public class CameraController : MonoBehaviour {
             float dampingFactor = Mathf.Max(Mathf.Abs(Input.GetAxis("Horizontal")), Mathf.Abs(Input.GetAxis("Vertical")));
 
             transform.Translate(distance * dampingFactor*direction);
+
+            ClampCameraPan();
         }
+    }
+
+    void ClampCameraPan()
+    {
+        Vector3 pos = this.transform.position;
+
+        if (Galaxy.GalaxyInstance.galaxyView==true)
+        {
+            pos.x = Mathf.Clamp(transform.position.x, -Galaxy.GalaxyInstance.maximumRadius, Galaxy.GalaxyInstance.maximumRadius);
+            pos.z = Mathf.Clamp(transform.position.z, -Galaxy.GalaxyInstance.maximumRadius, Galaxy.GalaxyInstance.maximumRadius);
+        }
+        else
+        {
+            pos.x = Mathf.Clamp(transform.position.x, -(Galaxy.maxNumberOfPlanets*5), Galaxy.maxNumberOfPlanets*5);
+            pos.z = Mathf.Clamp(transform.position.z, -(Galaxy.maxNumberOfPlanets * 5), Galaxy.maxNumberOfPlanets * 5);
+        }
+        this.transform.position = pos;
     }
 
     public void ResetCamera()
