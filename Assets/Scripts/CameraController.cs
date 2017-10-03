@@ -7,7 +7,13 @@ public class CameraController : MonoBehaviour {
     Transform rotationObject;
     Transform zoomObject;
 
+    public float zoomedInAngle = 45;
+    public float zoomedOutAngle = 90;
     public float panSpeed = 100;
+    public float minZoom = 20;
+    public float maxZoom = 200;
+    float zoomLevel = 0;
+    public bool inverseZoom;
 
     void Awake()
     {
@@ -48,13 +54,35 @@ public class CameraController : MonoBehaviour {
         this.transform.position = pos;
     }
 
+    void ChangeZoom()
+    {
+        if (Input.GetAxis("Mouse ScrollWheel")!=0)
+        {
+            if (inverseZoom==false)
+            {
+                zoomLevel = Mathf.Clamp01(zoomLevel - Input.GetAxis("Mouse ScrollWheel"));
+            }
+            else
+            {
+                zoomLevel = Mathf.Clamp01(zoomLevel + Input.GetAxis("Mouse ScrollWheel"));
+            }
+
+            float zoom = Mathf.Lerp(-minZoom, -maxZoom, zoomLevel);
+            zoomObject.transform.localPosition = new Vector3(0, 0, zoom);
+        }
+    }
+
     public void ResetCamera()
     {
         this.transform.position = new Vector3(0, 0, 0);
+        zoomLevel = 0;
+        rotationObject.transform.rotation = Quaternion.Euler(zoomedInAngle, 0, 0);
+        zoomObject.transform.localPosition = new Vector3(0, 0, minZoom);
     }
 	
 	// Update is called once per frame
 	void Update () {
         ChangePosition();
+        ChangeZoom();
     }
 }
